@@ -1,28 +1,21 @@
 import useFetch from "../useFetch";
 
-const HotelByName = ({ name }) => {
+const Hotelbyname = ({ name }) => {
   const { data, loading, error } = useFetch(
-    `https://hotels-backend-f82.vercel.app/hotels/${name}`
+    `https://hotels-backend-f82.vercel.app/hotels/name/${name}`
   );
 
-  console.log(data);
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
 
-  return data ? (
+  return (
     <div>
       <h2>{data.name}</h2>
-      <p>
-        <strong>Location:</strong> {data.location}
-      </p>
-      <p>
-        <strong>Rating:</strong> {data.rating}
-      </p>
-      <p>
-        <strong>Price Range:</strong> {data.priceRange}
-      </p>
+      <p><strong>Location:</strong> {data.location}</p>
+      <p><strong>Rating:</strong> {data.rating}</p>
+      <p><strong>Price Range:</strong> {data.priceRange}</p>
     </div>
-  ) : (
-    loading && <p>Loading...</p>
   );
 };
 
-export default HotelByName;
+export default Hotelbyname;
