@@ -1,38 +1,27 @@
 const express = require("express");
 const cors = require("cors");
+
 const app = express();
 
 const { initializeDatabase } = require("../db/db.connect");
 const Hotel = require("../models/hotel.models");
 
+// Connect Database
 initializeDatabase();
 
-app.use(cors());
+// CORS Configuration
+const corsOptions = {
+  origin: "*",
+  credentials: true,
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
-// const newHotel = {
-//   name: "Lake View",
-//   category: "Mid-Range",
-//   location: "124 Main Street, Anytown",
-//   rating: 3.2,
-//   reviews: [],
-//   website: "https://lake-view-example.com",
-//   phoneNumber: "+1234555890",
-//   checkInTime: "2:00 PM",
-//   checkOutTime: "12:00 PM",
-//   amenities: ["Laundry", "Boating"],
-//   priceRange: "$$$ (31-60)",
-//   reservationsNeeded: true,
-//   isParkingAvailable: false,
-//   isWifiAvailable: true,
-//   isPoolAvailable: false,
-//   isSpaAvailable: false,
-//   isRestaurantAvailable: false,
-//   photos: [
-//     "https://example.com/hotel1-photo1.jpg",
-//     "https://example.com/hotel1-photo2.jpg",
-//   ],
-// };
+// ---------------------------------------------------------
+// Add new hotel
+// ---------------------------------------------------------
 
 async function createHotel(newHotel) {
   try {
@@ -59,163 +48,61 @@ app.post("/hotels", async (req, res) => {
   }
 });
 
-// createHotel(newHotel)
-
 // ---------------------------------------------------------
-// IMPORTANT: specific routes must come BEFORE the generic
-// "/hotels/:hotelName" route, otherwise Express will match
-// "/hotels/directory/...", "/hotels/rating/...", and
-// "/hotels/category/..." as if "directory", "rating", and
-// "category" were hotel names.
-// ---------------------------------------------------------
-
-// Read hotel by phone number
-
-app.get("/hotels/directory/:phoneNumber", async (req, res) => {
-  try {
-    const hotel = await readHotelByPhoneNumber(req.params.phoneNumber);
-
-    if (hotel) {
-      res.json(hotel);
-    } else {
-      res.status(404).json({ error: "Hotel not found." });
-    }
-  } catch (error) {
-    res.status(500).json({ error: "Failed to fetch hotel." });
-  }
-});
-
-async function readHotelByPhoneNumber(phoneNumber) {
-  try {
-    const hotel = await Hotel.findOne({ phoneNumber: phoneNumber });
-    return hotel;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-// Read hotels by rating
-
-app.get("/hotels/rating/:hotelRating", async (req, res) => {
-  try {
-    const hotels = await readHotelByRating(req.params.hotelRating);
-
-    if (hotels.length != 0) {
-      res.json(hotels);
-    } else {
-      res.status(404).json({ error: "No hotels found." });
-    }
-  } catch (error) {
-    res.status(500).json({ error: "Failed to fetch hotels." });
-  }
-});
-
-async function readHotelByRating(hotelRating) {
-  try {
-    const hotels = await Hotel.find({ rating: Number(hotelRating) });
-    return hotels;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-// Read hotels by category
-
-app.get("/hotels/category/:hotelCategory", async (req, res) => {
-  try {
-    const hotels = await readHotelByCategory(req.params.hotelCategory);
-
-    if (hotels.length != 0) {
-      res.json(hotels);
-    } else {
-      res.status(404).json({ error: "No hotels found." });
-    }
-  } catch (error) {
-    res.status(500).json({ error: "Failed to fetch hotels." });
-  }
-});
-
-async function readHotelByCategory(hotelCategory) {
-  try {
-    const hotels = await Hotel.find({ category: hotelCategory });
-    return hotels;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
 // Read all hotels
-
-app.get("/hotels", async (req, res) => {
-  try {
-    const hotels = await readAllHotels();
-
-    if (hotels.length != 0) {
-      res.json(hotels);
-    } else {
-      res.status(404).json({ error: "No hotels found." });
-    }
-  } catch (error) {
-    res.status(500).json({ error: "Failed to fetch hotels." });
-  }
-});
+// ---------------------------------------------------------
 
 async function readAllHotels() {
   try {
     const hotels = await Hotel.find();
     return hotels;
   } catch (error) {
-    console.log(error);
+    throw error;
   }
 }
 
-// Read hotel by name
-// NOTE: this generic route must stay BELOW all the specific
-// "/hotels/..." routes above (directory, rating, category),
-// but it can be anywhere relative to "/hotels" (plain) since
-// that's a different, non-conflicting path.
-
-app.get("/hotels/:hotelName", async (req, res) => {
+app.get("/hotels", async (req, res) => {
   try {
-    const hotel = await readHotelByName(req.params.hotelName);
+    const hotels = await readAllHotels();
 
-    if (hotel) {
-      res.json(hotel);
+    if (hotels.length !== 0) {
+      res.json(hotels);
     } else {
-      res.status(404).json({ error: "Hotel not found." });
+      res.status(404).json({
+        error: "No hotels found.",
+      });
     }
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch hotel." });
+    res.status(500).json({
+      error: "Failed to fetch hotels.",
+    });
   }
 });
 
-async function readHotelByName(hotelName) {
+// ---------------------------------------------------------
+// Read hotel by phone number
+// ---------------------------------------------------------
+
+async function readHotelByPhoneNumber(phoneNumber) {
   try {
-    const hotel = await Hotel.findOne({ name: hotelName });
+    const hotel = await Hotel.findOne({
+      phoneNumber: phoneNumber,
+    });
+
     return hotel;
   } catch (error) {
     throw error;
   }
 }
 
-// Delete hotel by ID
-async function deleteHotelById(hotelId) {
+app.get("/hotels/directory/:phoneNumber", async (req, res) => {
   try {
-    const deletedHotel = await Hotel.findByIdAndDelete(hotelId);
-    return deletedHotel;
-  } catch (error) {
-    console.log(error);
-  }
-}
+    const hotel = await readHotelByPhoneNumber(
+      req.params.phoneNumber
+    );
 
-app.delete("/hotels/:hotelId", async (req, res) => {
-  try {
-    const deletedHotel = await deleteHotelById(req.params.hotelId);
-
-    if (deletedHotel) {
-      res.status(200).json({
-        message: "Hotel deleted successfully.",
-      });
+    if (hotel) {
+      res.json(hotel);
     } else {
       res.status(404).json({
         error: "Hotel not found.",
@@ -223,17 +110,131 @@ app.delete("/hotels/:hotelId", async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({
-      error: "Failed to delete hotel.",
+      error: "Failed to fetch hotel.",
     });
   }
 });
 
-// Update hotel rating by ID
+// ---------------------------------------------------------
+// Read hotels by rating
+// ---------------------------------------------------------
+
+async function readHotelByRating(hotelRating) {
+  try {
+    const hotels = await Hotel.find({
+      rating: Number(hotelRating),
+    });
+
+    return hotels;
+  } catch (error) {
+    throw error;
+  }
+}
+
+app.get("/hotels/rating/:hotelRating", async (req, res) => {
+  try {
+    const hotels = await readHotelByRating(
+      req.params.hotelRating
+    );
+
+    if (hotels.length !== 0) {
+      res.json(hotels);
+    } else {
+      res.status(404).json({
+        error: "No hotels found.",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      error: "Failed to fetch hotels.",
+    });
+  }
+});
+
+// ---------------------------------------------------------
+// Read hotels by category
+// ---------------------------------------------------------
+
+async function readHotelByCategory(hotelCategory) {
+  try {
+    const hotels = await Hotel.find({
+      category: hotelCategory,
+    });
+
+    return hotels;
+  } catch (error) {
+    throw error;
+  }
+}
+
+app.get("/hotels/category/:hotelCategory", async (req, res) => {
+  try {
+    const hotels = await readHotelByCategory(
+      req.params.hotelCategory
+    );
+
+    if (hotels.length !== 0) {
+      res.json(hotels);
+    } else {
+      res.status(404).json({
+        error: "No hotels found.",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      error: "Failed to fetch hotels.",
+    });
+  }
+});
+
+// ---------------------------------------------------------
+// Read hotel by name
+// ---------------------------------------------------------
+
+async function readHotelByName(hotelName) {
+  try {
+    const hotel = await Hotel.findOne({
+      name: hotelName,
+    });
+
+    return hotel;
+  } catch (error) {
+    throw error;
+  }
+}
+
+app.get("/hotels/name/:hotelName", async (req, res) => {
+  try {
+    const hotel = await readHotelByName(
+      req.params.hotelName
+    );
+
+    if (hotel) {
+      res.json(hotel);
+    } else {
+      res.status(404).json({
+        error: "Hotel not found.",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      error: "Failed to fetch hotel.",
+    });
+  }
+});
+
+// ---------------------------------------------------------
+// Update hotel by ID
+// ---------------------------------------------------------
+
 async function updateHotelById(hotelId, dataToUpdate) {
   try {
-    const updatedHotel = await Hotel.findByIdAndUpdate(hotelId, dataToUpdate, {
-      new: true,
-    });
+    const updatedHotel = await Hotel.findByIdAndUpdate(
+      hotelId,
+      dataToUpdate,
+      { new: true }
+    );
+
     return updatedHotel;
   } catch (error) {
     throw error;
@@ -242,7 +243,10 @@ async function updateHotelById(hotelId, dataToUpdate) {
 
 app.post("/hotels/:hotelId", async (req, res) => {
   try {
-    const updatedHotel = await updateHotelById(req.params.hotelId, req.body);
+    const updatedHotel = await updateHotelById(
+      req.params.hotelId,
+      req.body
+    );
 
     if (updatedHotel) {
       res.status(200).json({
@@ -261,10 +265,50 @@ app.post("/hotels/:hotelId", async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 5000;
+// ---------------------------------------------------------
+// Delete hotel by ID
+// ---------------------------------------------------------
 
-app.listen(PORT, () => {
-  console.log(`Server is running on ${PORT}`);
+async function deleteHotelById(hotelId) {
+  try {
+    const deletedHotel = await Hotel.findByIdAndDelete(hotelId);
+
+    return deletedHotel;
+  } catch (error) {
+    throw error;
+  }
+}
+
+app.delete("/hotels/:hotelId", async (req, res) => {
+  try {
+    const deletedHotel = await deleteHotelById(
+      req.params.hotelId
+    );
+
+    if (deletedHotel) {
+      res.status(200).json({
+        message: "Hotel deleted successfully.",
+      });
+    } else {
+      res.status(404).json({
+        error: "Hotel not found.",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      error: "Failed to delete hotel.",
+    });
+  }
 });
+
+// ---------------------------------------------------------
+// Local pe chalega, Vercel pe nahi
+// ---------------------------------------------------------
+
+if (require.main === module) {
+  app.listen(5000, () => {
+    console.log("Server running on port 5000");
+  });
+}
 
 module.exports = app;
