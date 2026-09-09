@@ -1,5 +1,5 @@
-import AllHotels from "./components/AllHotels";
-import HotelByName from "./components/HotelByName";
+import AllHotels from "./components/Allhotels";
+import HotelByName from "./components/Hotelbyname";
 
 function App() {
   return (
