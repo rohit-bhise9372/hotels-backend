@@ -30,16 +30,15 @@ hotels-app/
 │   │   └── db.connect.js       # MongoDB connection setup
 │   ├── models/
 │   │   └── hotel.models.js     # Hotel Mongoose schema
-│   ├── seed.js                 # Script to seed sample hotel data
-│   ├── .env                    # Environment variables (not committed)
+│   ├── .env                    # Environment variable
 │   ├── .gitignore
 │   └── package.json
 │
 └── frontend/
     ├── src/
     │   ├── components/
-    │   │   ├── AllHotels.jsx    # Displays all hotel names
-    │   │   └── HotelByName.jsx  # Displays details of one hotel
+    │   │   ├── Allhotels.jsx    # Displays all hotel names
+    │   │   └── Hotelbyname.jsx  # Displays details of one hotel
     │   ├── useFetch.js          # Custom hook for data fetching
     │   └── App.jsx              # Combines both components
     ├── package.json
