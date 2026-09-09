@@ -2,7 +2,8 @@
 
 A full-stack application to fetch and display hotel data from a MongoDB database, built with React (frontend) and Node.js/Express (backend).
 
-**Frontend:** https://hotels-frontend-f82.vercel.app/ \n
+**Frontend:** https://hotels-frontend-f82.vercel.app/
+
 **Backend:** https://hotels-backend-f82.vercel.app/hotels
 
 ## Features
