@@ -305,9 +305,17 @@ app.delete("/hotels/:hotelId", async (req, res) => {
 // Local pe chalega, Vercel pe nahi
 // ---------------------------------------------------------
 
+app.get("/", (req, res) => {
+  res.json({
+    message: "Hotel API is running successfully.",
+  });
+});
+
 if (require.main === module) {
   app.listen(5000, () => {
     console.log("Server running on port 5000");
   });
 }
+
+module.exports = app;
 module.exports = app;
