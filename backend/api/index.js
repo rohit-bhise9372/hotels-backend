@@ -203,7 +203,7 @@ async function readHotelByName(hotelName) {
   }
 }
 
-app.get("/hotels/name/:hotelName", async (req, res) => {
+app.get("/hotels/:hotelName", async (req, res) => {
   try {
     const hotel = await readHotelByName(
       req.params.hotelName
