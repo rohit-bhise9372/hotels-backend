@@ -1,7 +1,7 @@
 import "./App.css";
-import AllHotels from "../components/AllHotels";
-import HotelByName from "../components/HotelByName";
-import AddHotelForm from "../components/AddHotelForm";
+import AllHotels from "./components/AllHotels";
+import HotelByName from "./components/HotelByName";
+import AddHotelForm from "./components/AddHotelForm";
 
 function App() {
   return (
