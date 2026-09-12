@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-const API = "https://your-hotels-backend.vercel.app";
+const API = "https://hotels-frontend-f82.vercel.app/";
 
 export default function AddHotelForm() {
   const [formData, setFormData] = useState({
