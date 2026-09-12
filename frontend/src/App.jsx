@@ -1,12 +1,18 @@
-import AllHotels from "../components/Allhotels";
-import HotelByName from "../components/Hotelbyname";
+import AllHotels from "./components/AllHotels";
+import HotelByName from "./components/HotelByName";
+import AddHotelForm from "./components/AddHotelForm";
 
 function App() {
   return (
-    <div>
-      <Allhotels />
-      <Hotelbyname name="New Hotel 1" />
-    </div>
+    <main>
+      <AddHotelForm />
+      <hr />
+
+      <AllHotels />
+      <hr />
+
+      <HotelByName name="New Hotel 1" />
+    </main>
   );
 }
 

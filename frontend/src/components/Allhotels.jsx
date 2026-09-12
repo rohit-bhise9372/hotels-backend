@@ -1,6 +1,6 @@
 import useFetch from "../useFetch";
 
-const Allhotels = () => {
+const AllHotels = () => {
   const { data, loading, error } = useFetch(
     "https://hotels-backend-f82.vercel.app/hotels"
   );
@@ -16,13 +16,13 @@ const Allhotels = () => {
         data.map((hotel) => (
           <div key={hotel._id}>
             <h3>{hotel.name}</h3>
-            <p>{hotel.category}</p>
+            {/* <p>{hotel.category}</p>
             <p>{hotel.location}</p>
-            <p>⭐ {hotel.rating}</p>
+            <p>⭐ {hotel.rating}</p> */}
           </div>
         ))}
     </div>
   );
 };
 
-export default Allhotels;
+export default AllHotels;
