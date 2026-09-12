@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-const API = "https://hotels-frontend-f82.vercel.app/";
+const API = "https://hotels-backend-f82.vercel.app";
 
 export default function AddHotelForm() {
   const [formData, setFormData] = useState({
@@ -39,8 +39,12 @@ export default function AddHotelForm() {
     const newHotel = {
       ...formData,
       rating: Number(formData.rating),
-      amenities: formData.amenities.split(",").map((item) => item.trim()),
-      photos: formData.photos.split(",").map((item) => item.trim()),
+      amenities: formData.amenities
+        ? formData.amenities.split(",").map((item) => item.trim())
+        : [],
+      photos: formData.photos
+        ? formData.photos.split(",").map((item) => item.trim())
+        : [],
     };
 
     try {
@@ -80,7 +84,6 @@ export default function AddHotelForm() {
 
       <form onSubmit={handleSubmit}>
         <label>Hotel Name:</label>
-        <br />
         <input
           type="text"
           name="name"
@@ -91,7 +94,6 @@ export default function AddHotelForm() {
         <br />
 
         <label>Category:</label>
-        <br />
         <select
           name="category"
           value={formData.category}
@@ -101,13 +103,14 @@ export default function AddHotelForm() {
           <option value="Budget">Budget</option>
           <option value="Mid-Range">Mid-Range</option>
           <option value="Luxury">Luxury</option>
+          <option value="Boutique">Boutique</option>
           <option value="Resort">Resort</option>
+          <option value="Other">Other</option>
         </select>
         <br />
         <br />
 
         <label>Location:</label>
-        <br />
         <input
           type="text"
           name="location"
@@ -192,10 +195,10 @@ export default function AddHotelForm() {
           onChange={handleChange}
         >
           <option value="">Select Price Range</option>
-          <option value="$">$</option>
-          <option value="$$">$$</option>
-          <option value="$$$">$$$</option>
-          <option value="$$$$">$$$$</option>
+          <option value="$$ (11-30)">$$ (11-30)</option>
+          <option value="$$$ (31-60)">$$$ (31-60)</option>
+          <option value="$$$$ (61+)">$$$$ (61+)</option>
+          <option value="Other">Other</option>
         </select>
         <br />
         <br />
@@ -284,4 +287,3 @@ export default function AddHotelForm() {
     </div>
   );
 }
-
